@@ -1,6 +1,7 @@
 {
     "rom": "test/mk64.z64",
     "strippedrom": "test/mk64_stripped.z64",
+    "rebuiltrom": "test/mk64_out.z64",
     "audiofilesdir": "test",
     "audiotable_duplicateentries": "0x15",
     "audioseq_lui": "0xBCF66",

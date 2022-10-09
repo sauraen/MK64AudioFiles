@@ -24,8 +24,7 @@ if sys.version_info.major < 3:
 import json, struct, os
 
 with open('mk64.json', 'r') as jfile:
-    jtext = jfile.read()
-    j = json.loads(jtext)
+    j = json.loads(jfile.read())
 
 with open(j['rom'], 'rb') as romfile:
     rom = romfile.read()
@@ -33,8 +32,7 @@ assert rom[0:4] == b'\x80\x37\x12\x40', 'ROM is byte swapped or heavily modded'
 
 def instrs_to_addr(luiaddr, addiuaddr):
     luiaddr, addiuaddr = int(luiaddr, 0), int(addiuaddr, 0)
-    assert (luiaddr & 3) == 2
-    assert (addiuaddr & 3) == 2
+    assert (luiaddr & 3) == 2 and (addiuaddr & 3) == 2
     upper = struct.unpack('>h', rom[luiaddr:luiaddr+2])[0]
     lower = struct.unpack('>h', rom[addiuaddr:addiuaddr+2])[0]
     addr = (upper << 16) + lower
@@ -62,9 +60,9 @@ def extract_index(addr, type, override_count, name, fileext):
             f.write(rom[addr+offset:addr+offset+size])
     return count
 
-nseqs  = extract_index(audioseq_rom,  3, None, 'seq', 'aseq')
 nbanks = extract_index(audiobank_rom, 1, None, 'bank', 'bin')
 extract_index(audiotable_rom, 2, 1, 'table', 'bin')
+nseqs  = extract_index(audioseq_rom,  3, None, 'seq', 'aseq')
 
 for i in range(nseqs):
     offset = struct.unpack('>H', rom[seqbanksmap_rom+2*i:seqbanksmap_rom+2*i+2])[0]
