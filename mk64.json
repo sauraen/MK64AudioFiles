@@ -1,0 +1,14 @@
+{
+    "rom": "test/mk64.z64",
+    "strippedrom": "test/mk64_stripped.z64",
+    "audiofilesdir": "test",
+    "audiotable_duplicateentries": "0x15",
+    "audioseq_lui": "0xBCF66",
+    "audioseq_addiu": "0xBCF6A",
+    "audiobank_lui": "0xBCFE2",
+    "audiobank_addiu": "0xBCFEE",
+    "audiotable_lui": "0xBD0D6",
+    "audiotable_addiu": "0xBD0DA",
+    "seqbanksmap_lui": "0xBD152",
+    "seqbanksmap_addiu": "0XBD15A"
+} 
