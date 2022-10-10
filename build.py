@@ -22,11 +22,12 @@ if sys.version_info.major < 3:
     sys.exit(-1)
 
 import json, struct, os
+from crc import UpdateCRC
 
 with open('mk64.json', 'r') as jfile:
     j = json.loads(jfile.read())
 
-romout = open(j['rebuiltrom'], 'wb')
+romout = open(j['rebuiltrom'], 'wb+')
 with open(j['strippedrom'], 'rb') as romin:
     romout.write(romin.read())
 
@@ -48,18 +49,23 @@ def build_index(type, override_count, name, fileext):
     for i in range(realcount):
         with open('{}/{}/{}.{}'.format(j['audiofilesdir'], name, i, fileext), 'rb') as f:
             data = f.read()
-        offset = romout.tell() - start_addr
         size = len(data)
-        romout.write(data)
+        if size == 1:
+            # "Pointer" to another entry in the index
+            offset = data[0]
+            size = 0
+        else:
+            offset = romout.tell() - start_addr
+            romout.write(data)
         romout.seek(start_addr + 4 + 8 * i)
         romout.write(struct.pack('>II', offset, size))
-        romout.seek(start_addr + offset + size)
+        romout.seek(0, 2) # 0 relative to 2 = eof
         align16()
     if override_count:
         romout.seek(start_addr + 4)
         for i in range(override_count):
             romout.write(struct.pack('>II', offset, size))
-        romout.seek(0, 2)
+        romout.seek(0, 2) # 0 relative to 2 = eof
     return start_addr, realcount
 
 audiobank_rom, nbanks = build_index(1, None, 'bank', 'bin')
@@ -100,5 +106,7 @@ addr_to_instrs(j['audioseq_lui'],    j['audioseq_addiu'],    audioseq_rom)
 addr_to_instrs(j['audiobank_lui'],   j['audiobank_addiu'],   audiobank_rom)
 addr_to_instrs(j['audiotable_lui'],  j['audiotable_addiu'],  audiotable_rom)
 addr_to_instrs(j['seqbanksmap_lui'], j['seqbanksmap_addiu'], seqbanksmap_rom)
+
+UpdateCRC(romout, 6102)
 
 romout.close()

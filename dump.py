@@ -55,9 +55,14 @@ def extract_index(addr, type, override_count, name, fileext):
     for i in range(count):
         offset, size = struct.unpack('>II', rom[a:a+8])
         a += 8
-        assert addr + offset + size <= len(rom)
         with open('{}/{}/{}.{}'.format(j['audiofilesdir'], name, i, fileext), 'wb') as f:
-            f.write(rom[addr+offset:addr+offset+size])
+            if size == 0:
+                # "Pointer" to another entry in the index
+                assert offset < count and offset != i
+                f.write(struct.pack('b', offset))
+            else:
+                assert addr + offset + size <= len(rom)
+                f.write(rom[addr+offset:addr+offset+size])
     return count
 
 nbanks = extract_index(audiobank_rom, 1, None, 'bank', 'bin')
