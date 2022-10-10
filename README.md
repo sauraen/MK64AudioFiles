@@ -1,4 +1,4 @@
-#MK64AudioFiles
+# MK64AudioFiles
 
 Audio file dump / build tools for Mario Kart 64 \
 Copyright (C) 2022 Sauraen <my name at Google's email service> \
@@ -6,7 +6,7 @@ GPL3 licensed
 
 ### How to Use
 
-1. Edit mk64.json to specify the paths and ROM files for your project. `"rom"`
+1. Edit `mk64.json` to specify the paths and ROM files for your project. `"rom"`
 should point to the original unmodified ROM.
 2. `python3 dump.py` will remove all the audio files from the ROM, placing them
 into directories within your specified `"audiofilesdir"`, and the ROM with the
